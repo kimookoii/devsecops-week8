@@ -1,0 +1,37 @@
+name: IaC Security Scan
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  terraform-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: config
+          scan-ref: .
+
+      - name: Terraform Validate
+        run: terraform validate || true
+
+  ansible-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Ansible & ansible-lint
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+          pip install --upgrade pip
+          pip install ansible-lint
+
+      - name: Run ansible-lint
+        run: ansible-lint .
