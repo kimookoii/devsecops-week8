@@ -1,0 +1,14 @@
+﻿- name: Playbook
+  hosts: all
+  become: true
+  tasks:
+    - name: Install Apache
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+
+    - name: Copy Insecure Config
+      ansible.builtin.copy:
+        src: config.conf
+        dest: /etc/apache2/config.conf
+        mode: 0644
